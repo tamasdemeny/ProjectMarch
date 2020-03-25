@@ -11,14 +11,16 @@ public class Customer {
 
     public static void main(String[] args) {
         List fullData = new ArrayList();
-        String firstLine = "Name,MotherName,DoB,PoB,AccStart,AccNo,Balance,Deposit";
+        String firstLine = readerFirst();
+        //"Name,MotherName,DoB,PoB,AccStart,AccNo,Balance,Deposit";
         fullData = reader();
         //System.out.println(fullData);
 
 
         //System.out.println("Név szerint ABC: ");
         Collections.sort(fullData, new OsszehasonlitasNevSzerint());
-        Collections.sort(fullData, new OsszehasonlitasAnyaSzerint());
+        //Collections.sort(fullData, new OsszehasonlitasAnyaSzerint());
+
         writer(fullData,"nevek.csv", firstLine);
         //System.out.println(fullData);
 
@@ -31,6 +33,31 @@ public class Customer {
         Collections.sort(fullData, new OsszehasonlitasOsszegSzerint());
         //System.out.println(fullData);
         writer(fullData,"penzosszegek.csv", firstLine);
+    }
+
+    static String readerFirst() {
+        BufferedReader br = null;
+        String line = "";
+
+        try {
+            br = new BufferedReader(new FileReader(new File("ugyfelek.csv")));
+
+            line = br.readLine();
+
+
+        }   catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return line;
     }
 
     static List reader() {
@@ -78,7 +105,7 @@ public class Customer {
             fw.append("\n");
             for (int i=0;i<fullData.size();i++) {
                 String currentLine = fullData.get(i).toString();
-                System.out.println("Line " + i + " " + currentLine);
+                //System.out.println("Line " + i + " " + currentLine);
                 fw.append(currentLine);
                 fw.append("\n");
 
@@ -176,6 +203,8 @@ class OsszehasonlitasNevSzerint implements Comparator {
         OneCustomer p2 = (OneCustomer) o2;
 
 
+        /*EZ AZ EREDETI VERZIÓ
+
         if (p1.getName() == p2.getName()) {
             return 0;
         } else {
@@ -184,7 +213,22 @@ class OsszehasonlitasNevSzerint implements Comparator {
             } else {
                 return -1;
             }
+        }*/
+
+        if (p1.getName().compareTo(p2.getName()) > 0) {
+            return 1;
+        } else if (p1.getName().compareTo(p2.getName()) < 0) {
+            return -1;
+        } else if (p1.getName() == p2.getName() && p1.getMotherName() == p2.getMotherName()) {
+            return 0;
+        } else if (p1.getName() == p2.getName() && p1.getMotherName().compareTo(p2.getMotherName()) > 0) {
+            return 1;
+        } else if (p1.getName() == p2.getName() && p1.getMotherName().compareTo(p2.getMotherName()) < 0) {
+            return -1;
+        } else {
+            return -1;
         }
+
 
     }
 }
