@@ -12,7 +12,6 @@ public class Customer {
     public static void main(String[] args) {
         List fullData = new ArrayList();
         String firstLine = readerFirst();
-        //"Name,MotherName,DoB,PoB,AccStart,AccNo,Balance,Deposit";
         fullData = reader();
         //System.out.println(fullData);
 
