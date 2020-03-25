@@ -7,21 +7,28 @@ import java.util.*;
 
 
 public class Customer {
+    public String firstLine;
 
     public static void main(String[] args) {
         List fullData = new ArrayList();
+        String firstLine = "Name,MotherName,DoB,PoB,AccStart,AccNo,Balance,Deposit";
         fullData = reader();
         //System.out.println(fullData);
 
-        //Set s = new TreeSet();
+
         //System.out.println("Név szerint ABC: ");
         Collections.sort(fullData, new OsszehasonlitasNevSzerint());
         //System.out.println(fullData);
 
+       // System.out.println("Dátum szerint ABC: ");
+        Collections.sort(fullData, new OsszehasonlitasDatumSzerint());
+        //System.out.println(fullData);
+        writer(fullData,"szamlanyitas.csv", firstLine);
+
         //System.out.println("Összeg szerint: ");
         Collections.sort(fullData, new OsszehasonlitasOsszegSzerint());
         //System.out.println(fullData);
-        writer(fullData);
+        writer(fullData,"penzosszegek.csv", firstLine);
     }
 
     static List reader() {
@@ -35,10 +42,10 @@ public class Customer {
             while ((line = br.readLine()) != null) {
                 //System.out.println(line);
                 String[] newData = line.split(",");
-                Integer balance = Integer.parseInt(newData[6]);
-                Integer saved = Integer.parseInt(newData[7]);
-                System.out.println("balance + saved: " + balance +  saved);
-                fullData.add(new OneCustomer(newData[0], newData[1],newData[2],newData[3],newData[4],newData[5],balance, saved));
+               // Integer balance = Integer.parseInt(newData[6]);
+                //Integer saved = Integer.parseInt(newData[7]);
+                //System.out.println("balance + saved: " + balance +  saved);
+                fullData.add(new OneCustomer(newData[0], newData[1],newData[2],newData[3],newData[4],newData[5],newData[6], newData[7]));
             }
 
         }   catch (FileNotFoundException fnfe) {
@@ -56,16 +63,18 @@ public class Customer {
     return fullData;
     }
 
-    static void writer(List fullData) {
+    static void writer(List fullData, String fileName, String firstLine) {
 
-
-        File f = new File("penzosszegek.csv");
+        File f = new File(fileName);
+        //File f = new File("penzosszegek.csv");
 
         FileWriter fw = null;
         try {
             fw = new FileWriter(f);
 
-            for (int i=1;i<fullData.size();i++) {
+            fw.append(firstLine);
+            fw.append("\n");
+            for (int i=0;i<fullData.size();i++) {
                 String currentLine = fullData.get(i).toString();
                 System.out.println("Line " + i + " " + currentLine);
                 fw.append(currentLine);
@@ -93,9 +102,11 @@ public class Customer {
 
 
         }
+
+    public String getFirstLine() {
+        return firstLine;
     }
-
-
+}
 
 
 class OneCustomer implements Comparable {
@@ -106,13 +117,13 @@ class OneCustomer implements Comparable {
     private String placeBirth;
     private String accountDate;
     private String accountNum;
-    private Integer accountBalance;
-    private Integer accountSaved;
+    private String accountBalance;
+    private String accountSaved;
 
 
     @Override
     public String toString() {
-        return name + " (" + motherName + ") -- " + accountDate ;
+        return name + "," + motherName + "," + dob + "," + placeBirth + "," +accountDate + "," + accountNum +"," + accountBalance + "," + accountSaved ;
     }
 
     @Override
@@ -120,7 +131,11 @@ class OneCustomer implements Comparable {
         return 0;
     }
 
-    public OneCustomer(String name, String motherName,String dob, String placeBirth, String accountDate,String accountNum,Integer accountBalance, Integer accountSaved  ) {
+    public String getAccountDate() {
+        return accountDate;
+    }
+
+    public OneCustomer(String name, String motherName, String dob, String placeBirth, String accountDate, String accountNum, String accountBalance, String accountSaved  ) {
         this.name = name;
         this.motherName = motherName;
         this.dob = dob;
@@ -135,11 +150,11 @@ class OneCustomer implements Comparable {
         return name;
     }
 
-    public Integer getAccountBalance() {
+    public String getAccountBalance() {
         return accountBalance;
     }
 
-    public Integer getAccountSaved() {
+    public String getAccountSaved() {
         return accountSaved;
     }
 }
@@ -166,9 +181,32 @@ class OsszehasonlitasNevSzerint implements Comparator {
         }
 
     }
-
-
 }
+
+
+class OsszehasonlitasDatumSzerint implements Comparator {
+
+    @Override
+    public int compare(Object o1, Object o2) {
+
+        OneCustomer p1 = (OneCustomer) o1;
+        OneCustomer p2 = (OneCustomer) o2;
+
+
+        if (p1.getAccountDate() == p2.getAccountDate()) {
+            return 0;
+        } else {
+            if (p1.getAccountDate().compareTo(p2.getAccountDate())> 0){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+
+    }
+}
+
+
 
 class OsszehasonlitasOsszegSzerint implements Comparator {
 
@@ -177,8 +215,10 @@ class OsszehasonlitasOsszegSzerint implements Comparator {
 
         OneCustomer p1 = (OneCustomer) o1;
         OneCustomer p2 = (OneCustomer) o2;
-        Integer total1 =p1.getAccountBalance() + p1.getAccountSaved();
-        Integer total2 =p2.getAccountBalance() + p2.getAccountSaved();
+
+
+        Integer total1 =Integer.parseInt(p1.getAccountBalance()) + Integer.parseInt(p1.getAccountSaved());
+        Integer total2 =Integer.parseInt(p2.getAccountBalance()) + Integer.parseInt(p2.getAccountSaved());
 
         if (total1 == total2) {
             return 0;
