@@ -18,6 +18,8 @@ public class Customer {
 
         //System.out.println("Név szerint ABC: ");
         Collections.sort(fullData, new OsszehasonlitasNevSzerint());
+        Collections.sort(fullData, new OsszehasonlitasAnyaSzerint());
+        writer(fullData,"nevek.csv", firstLine);
         //System.out.println(fullData);
 
        // System.out.println("Dátum szerint ABC: ");
@@ -135,6 +137,10 @@ class OneCustomer implements Comparable {
         return accountDate;
     }
 
+    public String getMotherName() {
+        return motherName;
+    }
+
     public OneCustomer(String name, String motherName, String dob, String placeBirth, String accountDate, String accountNum, String accountBalance, String accountSaved  ) {
         this.name = name;
         this.motherName = motherName;
@@ -174,6 +180,28 @@ class OsszehasonlitasNevSzerint implements Comparator {
             return 0;
         } else {
             if (p1.getName().compareTo(p2.getName())> 0){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+
+    }
+}
+
+class OsszehasonlitasAnyaSzerint implements Comparator {
+
+    @Override
+    public int compare(Object o1, Object o2) {
+
+        OneCustomer p1 = (OneCustomer) o1;
+        OneCustomer p2 = (OneCustomer) o2;
+
+
+        if (p1.getMotherName() == p2.getMotherName()) {
+            return 0;
+        } else {
+            if (p1.getMotherName().compareTo(p2.getMotherName())> 0){
                 return 1;
             } else {
                 return -1;
