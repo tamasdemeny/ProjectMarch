@@ -38,7 +38,7 @@ public class Customer {
         List fullData = new ArrayList();
 
         try {
-            br = new BufferedReader(new FileReader(new File("src/hu/tamasdemeny/customers/ugyfelek.csv")));
+            br = new BufferedReader(new FileReader(new File("ugyfelek.csv")));
             String line;
             line = br.readLine();
             while ((line = br.readLine()) != null) {
