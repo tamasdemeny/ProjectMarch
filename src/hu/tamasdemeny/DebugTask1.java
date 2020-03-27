@@ -45,7 +45,6 @@ public class DebugTask1 {
         public static Stamper getInstance(int y, int m, int d) {
             //if (Stamper.instance == null) {
                 Stamper.instance = new Stamper(y, m, d);
-
             //}
 
             return Stamper.instance;
